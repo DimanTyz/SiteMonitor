@@ -12,14 +12,18 @@ namespace Installer
         public Form1()
         {
             InitializeComponent();
-            contr = new ServiceController();
-            contr.ServiceName = "[Site Monitor]";
-            if (contr.Status == ServiceControllerStatus.Running)
+           
+            try
             {
-                button2.Enabled = true;
-                button1.Enabled = false;
+                contr = new ServiceController();
+                contr.ServiceName = "[Site Monitor]";
+                if (contr != null && contr.Status == ServiceControllerStatus.Running)
+                {
+                    button2.Enabled = true;
+                    button1.Enabled = false;
+                }
             }
-            else
+            catch
             {
                 button1.Enabled = true;
                 button2.Enabled = false;
@@ -31,16 +35,18 @@ namespace Installer
 
             try
             {
-                if (contr != null && contr.Status != ServiceControllerStatus.Running)
-                {
+               
+                    ManagedInstallerClass.InstallHelper(new string[] { Application.StartupPath + @"\MonitorService.exe" });
+
+
                     contr = new ServiceController();
                     contr.ServiceName = "[Site Monitor]";
                     contr.Start();
                     button2.Enabled = true;
                     button1.Enabled = false;
-                }
+                
 
-                ManagedInstallerClass.InstallHelper(new string[] { Application.StartupPath + @"\MonitorService.exe" });
+
             }
             catch (Exception exc)
             {
