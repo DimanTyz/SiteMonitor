@@ -12,6 +12,18 @@ namespace Installer
         public Form1()
         {
             InitializeComponent();
+            contr = new ServiceController();
+            contr.ServiceName = "[Site Monitor]";
+            if (contr.Status == ServiceControllerStatus.Running)
+            {
+                button2.Enabled = true;
+                button1.Enabled = false;
+            }
+            else
+            {
+                button1.Enabled = true;
+                button2.Enabled = false;
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -19,12 +31,16 @@ namespace Installer
 
             try
             {
+                if (contr != null && contr.Status != ServiceControllerStatus.Running)
+                {
+                    contr = new ServiceController();
+                    contr.ServiceName = "[Site Monitor]";
+                    contr.Start();
+                    button2.Enabled = true;
+                    button1.Enabled = false;
+                }
+
                 ManagedInstallerClass.InstallHelper(new string[] { Application.StartupPath + @"\MonitorService.exe" });
-                contr = new ServiceController();
-                contr.ServiceName = "[Site Monitor]";
-                contr.Start();
-                button2.Enabled = true;
-                button1.Enabled = false;
             }
             catch (Exception exc)
             {
@@ -36,7 +52,7 @@ namespace Installer
         {
             try
             {
-                if (contr!=null && contr.Status == ServiceControllerStatus.Running)
+                if (contr != null && contr.Status == ServiceControllerStatus.Running)
                 {
                     contr = new ServiceController();
                     contr.ServiceName = "[Site Monitor]";
@@ -54,7 +70,7 @@ namespace Installer
 
         private void button3_Click(object sender, EventArgs e)
         {
-            if (StatusController.CheckStatus(contr))
+            if (StatusController.CheckStatus(new ServiceController { ServiceName = "[Site Monitor]" }))
                 MessageBox.Show("Service is working");
             else
                 MessageBox.Show("Service is not running");
