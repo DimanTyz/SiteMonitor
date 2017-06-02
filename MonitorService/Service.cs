@@ -21,7 +21,7 @@ namespace MonitorService
 
         protected override void OnStart(string[] args)
         {
-            //writer.WriteLine("Microsoft status is " + SiteChecker.Check("https://www.microsoft.com")); 
+            writer.WriteLine("Microsoft status is " + SiteChecker.Check("https://www.microsoft.com")); 
             writer.WriteLine("Apple Status is " + SiteChecker.Check("https://www.apple.com"));
             writer.WriteLine("Google status is " + SiteChecker.Check("https://www.google.com"));
             writer.Flush();
@@ -68,7 +68,7 @@ namespace MonitorService
 
             while (true)
             {
-                if (DateTime.Now.Hour == 22 && DateTime.Now.Minute == 15 && _ran == false && DateTime.Now.Subtract(date).Days > 1)
+                if (DateTime.Now.Hour == 22 && DateTime.Now.Minute == 15 && _ran == false && DateTime.Now.Subtract(date).Days > 2)//проверка через два дня(пн проверить, вт не проверить, ср не проверить, чт проверить)
                 {
                     date = DateTime.Now.Date;
                     _ran = true;
